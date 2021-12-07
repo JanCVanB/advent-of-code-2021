@@ -1,0 +1,2 @@
+solutions/**/solution_*
+!solutions/**/solution_*.roc
