@@ -1,3 +1,5 @@
 #!/bin/zsh
-./solutions/day-1-sonar-sweep/compile_and_run_1a.sh
-./solutions/day-1-sonar-sweep/compile_and_run_1b.sh
+
+for solution_module in solutions/**/solution_*.roc; do
+	./compile_and_run.sh $solution_module
+; done
