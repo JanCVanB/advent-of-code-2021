@@ -1,9 +1,9 @@
 #!/usr/bin/env roc
 
 app "solution_2b"
-    packages { base: "../../roc/examples/cli/platform" }
-    imports [ base.Stdout, base.Task.{ await, Task }, Inputs ]
-    provides [ main ] to base
+    packages { pf: "../../../clones/roc/examples/cli/platform" }
+    imports [ pf.Stdout, pf.Task.{ await, Task }, Inputs ]
+    provides [ main ] to pf
 
 main : Task {} *
 main = 

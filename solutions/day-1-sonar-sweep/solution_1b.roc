@@ -1,7 +1,7 @@
 #!/usr/bin/env roc
 
 app "solution_1b"
-    packages { pf: "../../roc/examples/cli/platform" }
+    packages { pf: "../../../clones/roc/examples/cli/platform" }
     imports [ Inputs, pf.Stdout, pf.Task.{ await, Task } ]
     provides [ main ] to pf
 
