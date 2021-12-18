@@ -1,43 +1,38 @@
 #!/usr/bin/env roc
 
 app "solution_1b"
-    packages { base: "../../roc/examples/cli/platform" }
-    imports [ base.Stdout, base.Task.{ await, Task }, Inputs ]
-    provides [ main ] to base
+    packages { pf: "../../roc/examples/cli/platform" }
+    imports [ Inputs, pf.Stdout, pf.Task.{ await, Task } ]
+    provides [ main ] to pf
 
-main : Task {} *
 main = 
-    {} <- await stateTheProblem
-    depthMeasurementTrioSums = sumTrios Inputs.depthMeasurements
-    depthIncreaseCount = countIncreases depthMeasurementTrioSums
-    present depthIncreaseCount
+    _ <- await (Stdout.line "")
+    Inputs.depthMeasurements
+        |> parse
+        |> sumTrios
+        |> countIncreases
+        |> Num.toStr
+        |> \x -> "Answer 1b:  \(x)"
+        |> Stdout.line
 
-stateTheProblem = Stdout.line "Problem 1b:"
-
-sumTrios : List Nat -> List Nat
-sumTrios = \numbers ->
-    length = List.len numbers
-    starts = List.sublist numbers {start:0, len:length-2}
-    middles = List.sublist numbers {start:1, len:length-2}
-    ends = List.sublist numbers {start:2, len:length-2}
-    pairs = List.map2 starts middles \start, middle ->
-        {start:start, middle:middle}
-    trios = List.map2 pairs ends \pair, end ->
-        {start:pair.start, middle:pair.middle, end}
-    List.map trios \trio ->
-        trio.start + trio.middle + trio.end
-
-countIncreases : List Nat -> Nat
 countIncreases = \numbers ->
-    length = List.len numbers
-    befores = List.sublist numbers {start:0, len:length-1}
-    afters = List.sublist numbers {start:1, len:length-1}
-    pairs = List.map2 befores afters \before, after ->
-        {before:before, after:after}
-    List.walk pairs 0 \count, pair ->
-        if pair.before < pair.after then count + 1 else count
+    List.mapWithIndex numbers \i, b ->
+            when List.get numbers (i-1) is
+                Err _ -> 0
+                Ok a -> if i >= 1 && a < b then 1 else 0
+        |> List.sum
 
-present : Nat -> Task {} *
-present = \output ->
-    formatted = Num.toStr output
-    Stdout.line "    \(formatted)"
+parse = \stringOfIntegersAndNewlines ->
+    stringOfIntegersAndNewlines
+        |> Str.split "\n"
+        |> List.keepOks Str.toI64
+
+sumTrios = \numbers ->
+    List.mapWithIndex numbers \i, c ->
+            when List.get numbers (i-2) is
+                Err _ -> Err DropMe
+                Ok a -> 
+                    when List.get numbers (i-1) is
+                        Err _ -> Err DropMe
+                        Ok b -> if i >= 2 then Ok (a + b + c) else Err DropMe
+        |> List.keepOks \x -> x

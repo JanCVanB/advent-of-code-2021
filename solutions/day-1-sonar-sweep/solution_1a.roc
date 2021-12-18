@@ -1,29 +1,27 @@
 #!/usr/bin/env roc
 
 app "solution_1a"
-    packages { base: "../../roc/examples/cli/platform" }
-    imports [ base.Stdout, base.Task.{ await, Task }, Inputs ]
-    provides [ main ] to base
+    packages { pf: "../../roc/examples/cli/platform" }
+    imports [ Inputs, pf.Stdout, pf.Task.{ await, Task } ]
+    provides [ main ] to pf
 
-main : Task {} *
 main = 
-    {} <- await stateTheProblem
-    depthIncreaseCount = countIncreases Inputs.depthMeasurements
-    present depthIncreaseCount
+    _ <- await (Stdout.line "")
+    Inputs.depthMeasurements
+        |> parse
+        |> countIncreases
+        |> Num.toStr
+        |> \x -> "Answer 1a:  \(x)"
+        |> Stdout.line
 
-stateTheProblem = Stdout.line "Problem 1a:"
-
-countIncreases : List Nat -> Nat
 countIncreases = \numbers ->
-    length = List.len numbers
-    befores = List.sublist numbers {start:0, len:length-1}
-    afters = List.sublist numbers {start:1, len:length-1}
-    pairs = List.map2 befores afters \before, after ->
-        {before:before, after:after}
-    List.walk pairs 0 \count, pair ->
-        if pair.before < pair.after then count + 1 else count
+    List.mapWithIndex numbers \i, b ->
+            when List.get numbers (i-1) is
+                Err _ -> 0
+                Ok a -> if i >= 1 && a < b then 1 else 0
+        |> List.sum
 
-present : Nat -> Task {} *
-present = \output ->
-    formatted = Num.toStr output
-    Stdout.line "    \(formatted)"
+parse = \stringOfIntegersAndNewlines ->
+    stringOfIntegersAndNewlines
+        |> Str.split "\n"
+        |> List.keepOks Str.toI64
