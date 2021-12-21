@@ -1,6 +1,24 @@
 #!/usr/bin/env roc
 
-app "solution_1b"
+# Problem 1: https://adventofcode.com/2021/day/1
+# Part 2:
+#     Consider sums of a three-measurement sliding window.
+#     How many sums are larger than the previous sum?
+# Example:
+#      -----       -----       -------
+#     | 199 | --> |     | --> |       | -> 5
+#     | 200 |     | 607 |     | start |
+#     | 208 |     | 618 |     | up    |
+#     | 210 |     | 618 |     | same  |
+#     | 200 |     | 617 |     | down  |
+#     | 207 |     | 647 |     | up    |
+#     | 240 |     | 716 |     | up    |
+#     | 269 |     | 769 |     | up    |
+#     | 260 |     | 792 |     | up    |
+#     | 263 |     |     |     |       |
+#      -----       -----       -------
+
+app "solution_1_part_2"
     packages { pf: "../../../clones/roc/examples/cli/platform" }
     imports [ Inputs, pf.Stdout, pf.Task.{ await, Task } ]
     provides [ main ] to pf
@@ -12,7 +30,7 @@ main =
     |> sumTrios
     |> countIncreases
     |> Num.toStr
-    |> \x -> "Answer 1b:  \(x)"
+    |> \x -> "Answer 1.2:  \(x)"
     |> Stdout.line
 
 countIncreases = \numbers ->

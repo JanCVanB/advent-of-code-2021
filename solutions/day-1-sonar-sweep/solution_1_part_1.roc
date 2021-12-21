@@ -1,6 +1,23 @@
 #!/usr/bin/env roc
 
-app "solution_1a"
+# Problem 1: https://adventofcode.com/2021/day/1
+# Part 1:
+#     How many measurements are larger than the previous measurement?
+# Example:
+#      -----       -------
+#     | 199 | --> | start | --> 7
+#     | 200 |     | up    |
+#     | 208 |     | up    |
+#     | 210 |     | up    |
+#     | 200 |     | down  |
+#     | 207 |     | up    |
+#     | 240 |     | up    |
+#     | 269 |     | up    |
+#     | 260 |     | down  |
+#     | 263 |     | up    |
+#      -----       -------
+
+app "solution_1_part_1"
     packages { pf: "../../../clones/roc/examples/cli/platform" }
     imports [ Inputs, pf.Stdout, pf.Task.{ await, Task } ]
     provides [ main ] to pf
@@ -11,7 +28,7 @@ main =
     |> parse
     |> countIncreases
     |> Num.toStr
-    |> \x -> "Answer 1a:  \(x)"
+    |> \x -> "Answer 1.1:  \(x)"
     |> Stdout.line
 
 countIncreases = \numbers ->

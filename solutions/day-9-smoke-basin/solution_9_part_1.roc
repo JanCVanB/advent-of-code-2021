@@ -1,6 +1,18 @@
 #!/usr/bin/env roc
 
-app "solution_9a"
+# Problem 9: https://adventofcode.com/2021/day/9
+# Part 1:
+#     What is the sum of the risk levels of all low points on your heightmap?
+# Example:
+#      ------------       ------------       ------------
+#     | 2199943210 | --> |  1       0 | --> |  2       1 | -> 15
+#     | 3987894921 |     |            |     |            | 
+#     | 9856789892 |     |   5        |     |   6        | 
+#     | 8767896789 |     |            |     |            | 
+#     | 9899965678 |     |       5    |     |       6    | 
+#      ------------       ------------       ------------
+
+app "solution_9_part_1"
     packages { pf: "../../../clones/roc/examples/cli/platform" }
     imports [ pf.Stdout, pf.Task.{ await, Task }, Inputs ]
     provides [ main ] to pf
@@ -14,7 +26,7 @@ main =
     |> convertToRiskLevels
     |> List.sum
     |> Num.toStr
-    |> \x -> "Answer 9a:  \(x)"
+    |> \x -> "Answer 9.1:  \(x)"
     |> Stdout.line 
 
 convertToRiskLevels = \heights ->
