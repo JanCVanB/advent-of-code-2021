@@ -4,18 +4,18 @@
 # Part 1:
 #     How many measurements are larger than the previous measurement?
 # Example:
-#      -----       -------
-#     | 199 | --> | start | --> 7
-#     | 200 |     | up    |
-#     | 208 |     | up    |
-#     | 210 |     | up    |
-#     | 200 |     | down  |
-#     | 207 |     | up    |
-#     | 240 |     | up    |
-#     | 269 |     | up    |
-#     | 260 |     | down  |
-#     | 263 |     | up    |
-#      -----       -------
+#      -----       --------
+#     | 199 | --> | start  | --> 1+1+1+1+1+1+1 = 7
+#     | 200 |     | up (1) |
+#     | 208 |     | up (1) |
+#     | 210 |     | up (1) |
+#     | 200 |     | down   |
+#     | 207 |     | up (1) |
+#     | 240 |     | up (1) |
+#     | 269 |     | up (1) |
+#     | 260 |     | down   |
+#     | 263 |     | up (1) |
+#      -----       --------
 
 app "solution_1_part_1"
     packages { pf: "../../../clones/roc/examples/cli/platform" }

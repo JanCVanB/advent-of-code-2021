@@ -6,7 +6,7 @@
 #     What do you get if you multiply your final horizontal position by your final depth?
 # Example:
 #      -----------       ------------
-#     | forward 5 | --> | x=5,  y=0  | --> 150
+#     | forward 5 | --> | x=5,  y=0  | --> 15 * 10 = 150
 #     | down 5    |     | x=5,  y=5  |
 #     | forward 8 |     | x=13, y=5  |
 #     | up 3      |     | x=13, y=2  |

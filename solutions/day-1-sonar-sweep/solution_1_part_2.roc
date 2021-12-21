@@ -5,18 +5,18 @@
 #     Consider sums of a three-measurement sliding window.
 #     How many sums are larger than the previous sum?
 # Example:
-#      -----       -----       -------
-#     | 199 | --> |     | --> |       | -> 5
-#     | 200 |     | 607 |     | start |
-#     | 208 |     | 618 |     | up    |
-#     | 210 |     | 618 |     | same  |
-#     | 200 |     | 617 |     | down  |
-#     | 207 |     | 647 |     | up    |
-#     | 240 |     | 716 |     | up    |
-#     | 269 |     | 769 |     | up    |
-#     | 260 |     | 792 |     | up    |
-#     | 263 |     |     |     |       |
-#      -----       -----       -------
+#      -----       -----       --------
+#     | 199 | --> |     | --> |        | -> 1+1+1+1+1 = 5
+#     | 200 |     | 607 |     | start  |
+#     | 208 |     | 618 |     | up (1) |
+#     | 210 |     | 618 |     | same   |
+#     | 200 |     | 617 |     | down   |
+#     | 207 |     | 647 |     | up (1) |
+#     | 240 |     | 716 |     | up (1) |
+#     | 269 |     | 769 |     | up (1) |
+#     | 260 |     | 792 |     | up (1) |
+#     | 263 |     |     |     |        |
+#      -----       -----       --------
 
 app "solution_1_part_2"
     packages { pf: "../../../clones/roc/examples/cli/platform" }
