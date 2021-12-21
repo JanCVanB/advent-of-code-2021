@@ -35,6 +35,9 @@ main =
     |> \x -> "Answer 21.1: \(x)"
     |> Stdout.line 
 
+initializeState = \setup ->
+    { isPlayer1sTurn: True, losingScore: 0, player1Position: setup.player1Position, player1Score: 0, player2Position: setup.player2Position, player2Score: 0, rollCount: 0 }
+
 modulo = \a, b ->
     if a < b then a
     else modulo (a-b) b
@@ -76,7 +79,8 @@ parse = \stringOfSentencesAndNewlines ->
         player2Position = List.last startingPositions |> Result.withDefault 0
         { player1Position: player1Position, player2Position: player2Position }
 
-play = \state ->
-    { isPlayer1sTurn: True, losingScore: 0, player1Position: state.player1Position, player1Score: 0, player2Position: state.player2Position, player2Score: 0, rollCount: 0 }
+play = \setup ->
+    setup
+    |> initializeState
     |> moveWhileNobodyWon
     |> \s -> { s & losingScore: List.min [s.player1Score, s.player2Score] |> Result.withDefault 0 }
