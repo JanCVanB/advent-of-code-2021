@@ -17,7 +17,6 @@ app "solution_9_part_1"
     imports [ pf.Stdout, pf.Task.{ await, Task }, Inputs ]
     provides [ main ] to pf
 
-main : Task {} *
 main = 
     _ <- await (Stdout.line "")
     Inputs.heightMap
