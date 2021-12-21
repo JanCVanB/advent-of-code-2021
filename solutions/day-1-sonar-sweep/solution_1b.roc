@@ -8,31 +8,28 @@ app "solution_1b"
 main = 
     _ <- await (Stdout.line "")
     Inputs.depthMeasurements
-        |> parse
-        |> sumTrios
-        |> countIncreases
-        |> Num.toStr
-        |> \x -> "Answer 1b:  \(x)"
-        |> Stdout.line
+    |> parse
+    |> sumTrios
+    |> countIncreases
+    |> Num.toStr
+    |> \x -> "Answer 1b:  \(x)"
+    |> Stdout.line
 
 countIncreases = \numbers ->
-    List.mapWithIndex numbers \i, b ->
-            when List.get numbers (i-1) is
-                Err _ -> 0
-                Ok a -> if i >= 1 && a < b then 1 else 0
-        |> List.sum
+    aa = List.sublist numbers { start: 0, len: List.len numbers - 1 }
+    bb = List.sublist numbers { start: 1, len: List.len numbers - 1 }
+    List.map2 aa bb (\a, b -> { a: a, b: b})
+    |> List.map (\pair -> if pair.a < pair.b then 1 else 0)
+    |> List.sum
 
 parse = \stringOfIntegersAndNewlines ->
     stringOfIntegersAndNewlines
-        |> Str.split "\n"
-        |> List.keepOks Str.toI64
+    |> Str.split "\n"
+    |> List.keepOks Str.toI64
 
 sumTrios = \numbers ->
-    List.mapWithIndex numbers \i, c ->
-            when List.get numbers (i-2) is
-                Err _ -> Err DropMe
-                Ok a -> 
-                    when List.get numbers (i-1) is
-                        Err _ -> Err DropMe
-                        Ok b -> if i >= 2 then Ok (a + b + c) else Err DropMe
-        |> List.keepOks \x -> x
+    aa = List.sublist numbers { start: 0, len: List.len numbers - 2 }
+    bb = List.sublist numbers { start: 1, len: List.len numbers - 2 }
+    cc = List.sublist numbers { start: 2, len: List.len numbers - 2 }
+    List.map3 aa bb cc (\a, b, c -> [ a, b, c ])
+    |> List.map List.sum 

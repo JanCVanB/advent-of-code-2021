@@ -10,47 +10,62 @@ main =
     _ <- await (Stdout.line "")
     Inputs.heightMap
     |> parse
-    |> computeBasinHeights
-    |> computeRiskLevels
+    |> filterToLocalMinima
+    |> convertToRiskLevels
     |> List.sum
     |> Num.toStr
     |> \x -> "Answer 9a:  \(x)"
     |> Stdout.line 
 
-computeBasinHeights = \heightMatrix ->
-    heightMatrix
-        |> List.mapWithIndex (\y, row ->
-            List.mapWithIndex row (\x, h -> if isBasin heightMatrix x y then h else 9))
-        |> List.walk [] \a, row ->
-            List.walk row a \b, height ->
-                if height == 9 then b else List.append b height
+convertToRiskLevels = \heights ->
+    List.map heights \h -> h + 1
 
-computeRiskLevels = \basinHeights ->
-    List.map basinHeights \h -> h + 1
+filterToLocalMinima = \matrix ->
+    matrix
+    |> List.mapWithIndex (\iy, row ->
+        List.mapWithIndex row \ix, z ->
+            if isLocalMinimum matrix row z ix iy then
+                z
+            else
+                globalMaximum
+    )
+    |> List.walk [] \outerValues, row ->
+        List.walk row outerValues \innerValues, z ->
+            if z == globalMaximum then
+                innerValues
+            else
+                List.append innerValues z
 
-getWithDefault = \list, index, default ->
-    List.get list index |> Result.withDefault default
+getSafely = \list, index ->
+    if index < 0 || index >= List.len list then
+        Err ThisIsNotHandledByTheBuiltinListDotGet
+    else
+        List.get list index
 
-isBasin = \matrix, x, y ->
-    north = 
-        if y <= 0 then 9
-        else matrix
-            |> getWithDefault (y - 1) []
-            |> getWithDefault x 9
-    south = 
-        if y >= (List.len matrix) - 1 then 9
-        else matrix
-            |> getWithDefault (y + 1) []
-            |> getWithDefault x 9
-    row = List.get matrix y |> Result.withDefault []
-    west =
-        if x <= 0 then 9
-        else getWithDefault row (x - 1) 9
-    east = 
-        if x >= (List.len row) - 1 then 9
-        else getWithDefault row (x + 1) 9
-    h = List.get row x |> Result.withDefault 9
-    h < north && h < south && h < west && h < east
+globalMaximum = 9
+
+isLocalMinimum = \matrix, row, z, ix, iy ->
+    zNorth = 
+        matrix
+        |> getSafely (iy - 1)
+        |> Result.withDefault []
+        |> getSafely ix
+        |> Result.withDefault globalMaximum
+    zSouth = 
+        matrix
+        |> getSafely (iy + 1)
+        |> Result.withDefault []
+        |> getSafely ix
+        |> Result.withDefault globalMaximum
+    zWest = 
+        row
+        |> getSafely (ix - 1)
+        |> Result.withDefault globalMaximum
+    zEast =
+        row
+        |> getSafely (ix + 1)
+        |> Result.withDefault globalMaximum
+    z < zNorth && z < zSouth && z < zWest && z < zEast
 
 parse = \stringOfDigitsAndNewlines ->
     stringOfDigitsAndNewlines
@@ -58,10 +73,10 @@ parse = \stringOfDigitsAndNewlines ->
     |> List.map \row ->
         row
         |> splitUtf8Characters
-        |> List.map \c ->
-            when Str.toNat c is
-                Ok n -> n
-                Err _ -> 9
+        |> List.map \s ->
+            s
+            |> Str.toNat
+            |> Result.withDefault globalMaximum
 
 splitUtf8Characters = \s ->
     s
@@ -69,6 +84,6 @@ splitUtf8Characters = \s ->
     |> List.map utf8CharacterToString
 
 utf8CharacterToString = \u ->
-    when Str.fromUtf8 [u] is
-        Err _ -> "!"
-        Ok c -> c
+    [u]
+    |> Str.fromUtf8
+    |> Result.withDefault "!"

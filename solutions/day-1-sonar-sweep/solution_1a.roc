@@ -8,20 +8,20 @@ app "solution_1a"
 main = 
     _ <- await (Stdout.line "")
     Inputs.depthMeasurements
-        |> parse
-        |> countIncreases
-        |> Num.toStr
-        |> \x -> "Answer 1a:  \(x)"
-        |> Stdout.line
+    |> parse
+    |> countIncreases
+    |> Num.toStr
+    |> \x -> "Answer 1a:  \(x)"
+    |> Stdout.line
 
 countIncreases = \numbers ->
-    List.mapWithIndex numbers \i, b ->
-            when List.get numbers (i-1) is
-                Err _ -> 0
-                Ok a -> if i >= 1 && a < b then 1 else 0
-        |> List.sum
+    aa = List.sublist numbers { start: 0, len: List.len numbers - 1 }
+    bb = List.sublist numbers { start: 1, len: List.len numbers - 1 }
+    List.map2 aa bb (\a, b -> { a: a, b: b })
+    |> List.map (\pair -> if pair.a < pair.b then 1 else 0)
+    |> List.sum
 
 parse = \stringOfIntegersAndNewlines ->
     stringOfIntegersAndNewlines
-        |> Str.split "\n"
-        |> List.keepOks Str.toI64
+    |> Str.split "\n"
+    |> List.keepOks Str.toI64
